@@ -1081,6 +1081,21 @@
   </div>
 </div>
 
+<!-- Auth overlay — shown while Google sign-in popup is open -->
+<div id="auth-overlay" style="display:none; position:fixed; inset:0; z-index:300; background:rgba(58,48,40,0.7); backdrop-filter:blur(6px); align-items:center; justify-content:center; flex-direction:column; gap:20px; text-align:center; padding:30px;">
+  <div style="background:var(--white); border-radius:var(--radius); padding:40px 36px; max-width:340px; width:100%; box-shadow:0 20px 60px rgba(30,20,10,0.4);">
+    <div style="font-size:3rem; margin-bottom:14px;">🏺</div>
+    <h2 style="font-family:'Playfair Display',serif; font-size:1.4rem; color:var(--ink); margin-bottom:8px;">Liz's Antique Archive</h2>
+    <p style="color:var(--ink-mid); font-size:0.88rem; margin-bottom:24px; line-height:1.6;">Connecting to Google Drive to load your collection&hellip;</p>
+    <div style="display:flex; align-items:center; justify-content:center; gap:10px; color:var(--gold-dark); font-size:0.85rem; font-weight:700;">
+      <span class="spinner" style="border-color:rgba(201,164,74,0.3); border-top-color:var(--gold);"></span>
+      Waiting for sign-in&hellip;
+    </div>
+    <p style="margin-top:18px; font-size:0.75rem; color:var(--ink-light);">A Google sign-in window should have opened.<br>If not, check your pop-up blocker.</p>
+    <button class="btn btn-rose" onclick="hideAuthOverlay()" style="margin-top:18px; width:100%; justify-content:center;">Skip for now</button>
+  </div>
+</div>
+
 <!-- ═══════════════════════════════════════════════════════ TOAST -->
 <div class="toast-container" id="toast-container"></div>
 
@@ -1092,8 +1107,8 @@
    CONFIGURATION — Replace with your credentials
 ════════════════════════════════════════════════════════════ */
 const CONFIG = {
-  CLIENT_ID:  'YOUR_CLIENT_ID',       // e.g. 123456789-abc.apps.googleusercontent.com
-  API_KEY:    'YOUR_API_KEY',          // from Google Cloud → Credentials → API Key
+  CLIENT_ID:  '421865949103-9n86mljvr8dv14eahvu3i7ncb60t12oe.apps.googleusercontent.com',       // e.g. 123456789-abc.apps.googleusercontent.com
+  API_KEY:    'AIzaSyAoVa8n52yOz-7G5PYecOAXKuIGIlBYPxg',          // from Google Cloud → Credentials → API Key
   FOLDER_NAME: "Liz's Antique Archive",
   DATA_FILE:   'antiques.json',
   SCOPES:      'https://www.googleapis.com/auth/drive.file',
@@ -1122,29 +1137,49 @@ function initGoogleAuth() {
     client_id: CONFIG.CLIENT_ID,
     scope: CONFIG.SCOPES,
     callback: onTokenReceived,
+    error_callback: () => {
+      hideAuthOverlay();
+      toast('Sign-in cancelled \u2014 tap Connect to try again', 'info');
+    }
   });
+
+  // Button = manual fallback / re-connect
   document.getElementById('btn-connect').addEventListener('click', () => {
-    tokenClient.requestAccessToken({ prompt: '' });
+    showAuthOverlay();
+    tokenClient.requestAccessToken({ prompt: 'select_account' });
   });
+
+  // Auto sign-in on load
+  showAuthOverlay();
+  tokenClient.requestAccessToken({ prompt: 'select_account' });
 }
 
 async function onTokenReceived(tokenResponse) {
+  hideAuthOverlay();
   if (tokenResponse.error) {
-    toast('Connection failed: ' + tokenResponse.error, 'error');
+    toast('Sign-in failed: ' + tokenResponse.error, 'error');
     return;
   }
   accessToken = tokenResponse.access_token;
   driveConnected = true;
   setAuthStatus(true);
-  toast('✅ Connected to Google Drive!', 'success');
+  toast('Connected to Google Drive!', 'success');
   await ensureFolderAndLoad();
 }
 
 function setAuthStatus(connected) {
   const el = document.getElementById('auth-status');
   el.className = connected ? 'connected' : 'disconnected';
-  el.textContent = connected ? '⬤ Drive connected' : '⬤ Not connected';
+  el.textContent = connected ? '\u25CF Drive connected' : '\u25CF Not connected';
   document.getElementById('btn-connect').style.display = connected ? 'none' : '';
+}
+
+function showAuthOverlay() {
+  document.getElementById('auth-overlay').style.display = 'flex';
+}
+
+function hideAuthOverlay() {
+  document.getElementById('auth-overlay').style.display = 'none';
 }
 
 /* ════════════════════════════════════════════════════════════
