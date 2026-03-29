@@ -1081,18 +1081,18 @@
   </div>
 </div>
 
-<!-- Auth overlay — shown while Google sign-in popup is open -->
-<div id="auth-overlay" style="display:none; position:fixed; inset:0; z-index:300; background:rgba(58,48,40,0.7); backdrop-filter:blur(6px); align-items:center; justify-content:center; flex-direction:column; gap:20px; text-align:center; padding:30px;">
-  <div style="background:var(--white); border-radius:var(--radius); padding:40px 36px; max-width:340px; width:100%; box-shadow:0 20px 60px rgba(30,20,10,0.4);">
-    <div style="font-size:3rem; margin-bottom:14px;">🏺</div>
-    <h2 style="font-family:'Playfair Display',serif; font-size:1.4rem; color:var(--ink); margin-bottom:8px;">Liz's Antique Archive</h2>
-    <p style="color:var(--ink-mid); font-size:0.88rem; margin-bottom:24px; line-height:1.6;">Connecting to Google Drive to load your collection&hellip;</p>
-    <div style="display:flex; align-items:center; justify-content:center; gap:10px; color:var(--gold-dark); font-size:0.85rem; font-weight:700;">
-      <span class="spinner" style="border-color:rgba(201,164,74,0.3); border-top-color:var(--gold);"></span>
-      Waiting for sign-in&hellip;
-    </div>
-    <p style="margin-top:18px; font-size:0.75rem; color:var(--ink-light);">A Google sign-in window should have opened.<br>If not, check your pop-up blocker.</p>
-    <button class="btn btn-rose" onclick="hideAuthOverlay()" style="margin-top:18px; width:100%; justify-content:center;">Skip for now</button>
+<!-- Welcome splash — always shown on load, requires user tap to sign in -->
+<div id="auth-overlay" style="display:flex; position:fixed; inset:0; z-index:300; background:linear-gradient(135deg, var(--ink) 0%, #5a4a3a 100%); align-items:center; justify-content:center; flex-direction:column; padding:30px;">
+  <div style="background:var(--white); border-radius:var(--radius); padding:44px 36px; max-width:360px; width:100%; box-shadow:0 20px 60px rgba(30,20,10,0.5); text-align:center;">
+    <div style="font-size:3.5rem; margin-bottom:6px;">🏺</div>
+    <h1 style="font-family:'Playfair Display',serif; font-size:1.6rem; color:var(--ink); margin-bottom:6px; font-weight:700;">Liz's Antique Archive</h1>
+    <p style="font-family:'Playfair Display',serif; font-style:italic; color:var(--ink-light); font-size:0.85rem; margin-bottom:28px;">✦ A personal collection catalogue ✦</p>
+    <div style="height:1px; background:linear-gradient(to right, transparent, var(--gold-light), transparent); margin-bottom:28px;"></div>
+    <p style="color:var(--ink-mid); font-size:0.9rem; margin-bottom:24px; line-height:1.6;">Sign in with Google to load your collection from Drive.</p>
+    <button id="btn-splash-signin" class="btn btn-gold" style="width:100%; justify-content:center; font-size:1rem; padding:14px 20px;">
+      🔑 Sign in with Google
+    </button>
+    <p style="margin-top:16px; font-size:0.72rem; color:var(--ink-light); line-height:1.5;">Your collection is stored securely<br>in your own Google Drive.</p>
   </div>
 </div>
 
@@ -1138,21 +1138,46 @@ function initGoogleAuth() {
     scope: CONFIG.SCOPES,
     callback: onTokenReceived,
     error_callback: () => {
-      hideAuthOverlay();
-      toast('Sign-in cancelled \u2014 tap Connect to try again', 'info');
+      // Restore splash so user can try again
+      showSplash();
+      toast('Sign-in was cancelled \u2014 tap the button to try again', 'info');
     }
   });
 
-  // Button = manual fallback / re-connect
-  document.getElementById('btn-connect').addEventListener('click', () => {
-    showAuthOverlay();
+  // Splash screen sign-in button — user gesture, so popup is always allowed
+  document.getElementById('btn-splash-signin').addEventListener('click', () => {
+    showWaiting();
     tokenClient.requestAccessToken({ prompt: 'select_account' });
   });
 
-  // Auto sign-in on load
-  showAuthOverlay();
-  tokenClient.requestAccessToken({ prompt: 'select_account' });
+  // Header connect button (re-connect / switch account)
+  document.getElementById('btn-connect').addEventListener('click', () => {
+    showWaiting();
+    tokenClient.requestAccessToken({ prompt: 'select_account' });
+  });
 }
+
+function showSplash() {
+  const overlay = document.getElementById('auth-overlay');
+  overlay.style.display = 'flex';
+  document.getElementById('btn-splash-signin').innerHTML = '🔑 Sign in with Google';
+  document.getElementById('btn-splash-signin').disabled = false;
+}
+
+function showWaiting() {
+  // Change button to a loading state but keep overlay visible
+  const btn = document.getElementById('btn-splash-signin');
+  btn.innerHTML = '<span class="spinner" style="border-color:rgba(255,255,255,0.3);border-top-color:white;"></span> Opening sign-in\u2026';
+  btn.disabled = true;
+  document.getElementById('auth-overlay').style.display = 'flex';
+}
+
+function hideAuthOverlay() {
+  document.getElementById('auth-overlay').style.display = 'none';
+}
+
+// Keep showAuthOverlay as alias for compatibility
+function showAuthOverlay() { showSplash(); }
 
 async function onTokenReceived(tokenResponse) {
   hideAuthOverlay();
@@ -1172,14 +1197,6 @@ function setAuthStatus(connected) {
   el.className = connected ? 'connected' : 'disconnected';
   el.textContent = connected ? '\u25CF Drive connected' : '\u25CF Not connected';
   document.getElementById('btn-connect').style.display = connected ? 'none' : '';
-}
-
-function showAuthOverlay() {
-  document.getElementById('auth-overlay').style.display = 'flex';
-}
-
-function hideAuthOverlay() {
-  document.getElementById('auth-overlay').style.display = 'none';
 }
 
 /* ════════════════════════════════════════════════════════════
