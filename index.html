@@ -1252,22 +1252,52 @@ async function saveDataFileToDrive() {
   const blob = new Blob([json], { type: 'application/json' });
 
   if (dataFileId) {
-    // Update existing
-    const form = new FormData();
-    form.append('file', blob);
+    // Update existing file — multipart PATCH requires metadata + file parts
+    const boundary = 'antiqueArchiveBoundary';
+    const metaPart = JSON.stringify({ name: CONFIG.DATA_FILE, mimeType: 'application/json' });
+    const body = [
+      `--${boundary}`,
+      'Content-Type: application/json; charset=UTF-8',
+      '',
+      metaPart,
+      `--${boundary}`,
+      'Content-Type: application/json',
+      '',
+      json,
+      `--${boundary}--`
+    ].join('\r\n');
+
     await driveRequest(
-      `https://www.googleapis.com/upload/drive/v3/files/${dataFileId}?uploadType=multipart`,
-      { method: 'PATCH', body: form }
+      `https://www.googleapis.com/upload/drive/v3/files/${dataFileId}?uploadType=multipart&fields=id`,
+      {
+        method: 'PATCH',
+        headers: { 'Content-Type': `multipart/related; boundary=${boundary}` },
+        body
+      }
     );
   } else {
-    // Create new
-    const meta = JSON.stringify({ name: CONFIG.DATA_FILE, parents: [folderId] });
-    const form = new FormData();
-    form.append('metadata', new Blob([meta], { type: 'application/json' }));
-    form.append('file', blob);
+    // Create new file
+    const boundary = 'antiqueArchiveBoundary';
+    const metaPart = JSON.stringify({ name: CONFIG.DATA_FILE, mimeType: 'application/json', parents: [folderId] });
+    const body = [
+      `--${boundary}`,
+      'Content-Type: application/json; charset=UTF-8',
+      '',
+      metaPart,
+      `--${boundary}`,
+      'Content-Type: application/json',
+      '',
+      json,
+      `--${boundary}--`
+    ].join('\r\n');
+
     const r = await driveRequest(
       'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',
-      { method: 'POST', body: form }
+      {
+        method: 'POST',
+        headers: { 'Content-Type': `multipart/related; boundary=${boundary}` },
+        body
+      }
     );
     const d = await r.json();
     dataFileId = d.id;
@@ -1275,21 +1305,33 @@ async function saveDataFileToDrive() {
 }
 
 async function uploadPhotoToDrive(base64, itemId) {
-  // Strip prefix
   const b64 = base64.split(',')[1];
   const binary = atob(b64);
   const bytes = new Uint8Array(binary.length);
   for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-  const blob = new Blob([bytes], { type: 'image/jpeg' });
 
-  const meta = JSON.stringify({ name: `photo_${itemId}.jpg`, parents: [folderId] });
-  const form = new FormData();
-  form.append('metadata', new Blob([meta], { type: 'application/json' }));
-  form.append('file', blob);
+  const boundary = 'antiquePhotoBoundary';
+  const meta = JSON.stringify({ name: `photo_${itemId}.jpg`, mimeType: 'image/jpeg', parents: [folderId] });
+
+  // Build multipart body manually with binary data
+  const encoder = new TextEncoder();
+  const preamble = encoder.encode(
+    `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${meta}\r\n--${boundary}\r\nContent-Type: image/jpeg\r\n\r\n`
+  );
+  const epilogue = encoder.encode(`\r\n--${boundary}--`);
+
+  const bodyBuffer = new Uint8Array(preamble.length + bytes.length + epilogue.length);
+  bodyBuffer.set(preamble, 0);
+  bodyBuffer.set(bytes, preamble.length);
+  bodyBuffer.set(epilogue, preamble.length + bytes.length);
 
   const r = await driveRequest(
     'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',
-    { method: 'POST', body: form }
+    {
+      method: 'POST',
+      headers: { 'Content-Type': `multipart/related; boundary=${boundary}` },
+      body: bodyBuffer
+    }
   );
   const d = await r.json();
   return d.id;
