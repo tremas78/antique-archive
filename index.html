@@ -1109,9 +1109,9 @@
 const CONFIG = {
   CLIENT_ID:  '421865949103-9n86mljvr8dv14eahvu3i7ncb60t12oe.apps.googleusercontent.com',       // e.g. 123456789-abc.apps.googleusercontent.com
   API_KEY:    'AIzaSyAoVa8n52yOz-7G5PYecOAXKuIGIlBYPxg',          // from Google Cloud → Credentials → API Key
-  FOLDER_NAME: "Liz's Antique Archive",
+  FOLDER_NAME: "Liz Antique Archive",  // no apostrophe — avoids Drive query escaping issues
   DATA_FILE:   'antiques.json',
-  SCOPES:      'https://www.googleapis.com/auth/drive.file',
+  SCOPES:      'https://www.googleapis.com/auth/drive',  // full drive scope needed for folder search
   PHOTO_MAX_PX: 1200,   // max width or height after compression
   PHOTO_QUALITY: 0.78,  // JPEG quality (0–1)
 };
@@ -1189,7 +1189,11 @@ async function driveRequest(url, options = {}) {
   if (!accessToken) throw new Error('Not authenticated — please connect to Drive first');
   const headers = { 'Authorization': 'Bearer ' + accessToken, ...options.headers };
   const resp = await fetch(url, { ...options, headers });
-  if (!resp.ok) throw new Error(`Drive error ${resp.status}: ${await resp.text()}`);
+  if (!resp.ok) {
+    const errText = await resp.text();
+    console.error('Drive API error', resp.status, url, errText);
+    throw new Error(`Drive error ${resp.status}: ${errText}`);
+  }
   return resp;
 }
 
