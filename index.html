@@ -56,49 +56,62 @@
   /* ─── HEADER ────────────────────────────────────────────────── */
   header {
     background: linear-gradient(135deg, var(--ink) 0%, #5a4a3a 100%);
-    padding: 20px 30px;
+    padding: 14px 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 12px;
     box-shadow: 0 4px 20px var(--shadow-deep);
     position: sticky;
     top: 0;
     z-index: 100;
+    flex-wrap: wrap;
   }
 
   .header-brand {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
+    min-width: 0;
+    flex: 1;
   }
 
   .header-logo {
-    font-size: 2.2rem;
+    font-size: 2rem;
     line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .header-titles {
+    min-width: 0;
   }
 
   .header-titles h1 {
     font-family: 'Playfair Display', serif;
-    font-size: 1.6rem;
+    font-size: 1.4rem;
     color: var(--gold-light);
     font-weight: 700;
     letter-spacing: 0.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .header-titles p {
-    font-size: 0.78rem;
-    color: var(--ink-light);
+    font-size: 0.72rem;
     color: #b0a090;
     font-style: italic;
     letter-spacing: 1px;
     margin-top: 2px;
+    white-space: nowrap;
   }
 
   .header-actions {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     align-items: center;
     flex-wrap: wrap;
+    flex-shrink: 0;
   }
 
   /* ─── BUTTONS ────────────────────────────────────────────────── */
@@ -360,16 +373,33 @@
   .toolbar {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
     margin-bottom: 24px;
     flex-wrap: wrap;
   }
 
-  .toolbar-left { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-  .toolbar-right { margin-left: auto; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .toolbar-left {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .toolbar-right {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+  }
 
   .search-box {
     position: relative;
+    flex: 1;
+    min-width: 130px;
+    max-width: 260px;
   }
 
   .search-box input {
@@ -381,7 +411,7 @@
     background: var(--white);
     color: var(--ink);
     outline: none;
-    width: 220px;
+    width: 100%;
     transition: border-color 0.2s, box-shadow 0.2s;
   }
 
@@ -403,13 +433,14 @@
   .filter-select {
     font-family: 'Lato', sans-serif;
     font-size: 0.82rem;
-    padding: 8px 12px;
+    padding: 8px 10px;
     border: 1.5px solid var(--parchment);
     border-radius: 50px;
     background: var(--white);
     color: var(--ink);
     outline: none;
     cursor: pointer;
+    max-width: 140px;
   }
 
   .count-pill {
@@ -726,23 +757,52 @@
   .export-option p { font-size: 0.78rem; color: var(--ink-mid); }
 
   /* ─── RESPONSIVE ─────────────────────────────────────────────── */
+
+  /* Prevent ANY horizontal scroll on all screen sizes */
+  html, body { max-width: 100%; overflow-x: hidden; }
+
   @media (max-width: 768px) {
-    header { padding: 14px 16px; }
-    .header-titles h1 { font-size: 1.2rem; }
-    main { padding: 20px 14px; }
+    main { padding: 16px 12px; }
+
+    /* Form */
     .form-grid { grid-template-columns: 1fr; }
     .photo-drop { aspect-ratio: 16/9; }
     .field-row { grid-template-columns: 1fr; }
     .field-row.three { grid-template-columns: 1fr 1fr; }
-    .toolbar { gap: 8px; }
-    .toolbar-right { margin-left: 0; width: 100%; }
-    .search-box input { width: 100%; }
-    #collection-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; }
-    .header-actions .btn-ghost { display: none; }
+    .form-actions { flex-wrap: wrap; }
+
+    /* Toolbar — stack export/sync below filters on mobile */
+    .toolbar { flex-direction: column; align-items: stretch; }
+    .toolbar-left { width: 100%; }
+    .toolbar-right { width: 100%; justify-content: flex-end; }
+
+    /* Grid */
+    #collection-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+
+    /* Header: subtitle hidden on small screens to save space */
+    .header-titles p { display: none; }
+    .header-titles h1 { font-size: 1.1rem; }
+
+    /* IMPORTANT: Connect button must always be visible — never hide it */
+    /* Only hide the subtitle tagline text on very narrow screens */
   }
 
   @media (max-width: 500px) {
     .field-row.three { grid-template-columns: 1fr; }
+
+    /* Header: stack brand and actions on very small phones */
+    header { flex-direction: column; align-items: stretch; gap: 10px; padding: 12px 14px; }
+    .header-brand { width: 100%; }
+    .header-actions {
+      width: 100%;
+      justify-content: space-between;
+    }
+    /* Make connect + add buttons share the full width */
+    #btn-connect { flex: 1; justify-content: center; }
+    .btn-gold#btn-add-item { flex: 1; justify-content: center; }
+    #auth-status { font-size: 0.68rem; }
+
+    /* Modal slides up from bottom on phones */
     .modal { border-radius: var(--radius) var(--radius) 0 0; }
     .modal-overlay { align-items: flex-end; padding: 0; }
     .modal { max-height: 94vh; }
@@ -787,7 +847,7 @@
   </div>
   <div class="header-actions">
     <div id="auth-status" class="disconnected">⬤ Not connected</div>
-    <button class="btn btn-ghost" id="btn-connect">🔑 Connect to Drive</button>
+    <button class="btn btn-rose" id="btn-connect">🔑 Connect to Drive</button>
     <button class="btn btn-gold" id="btn-add-item" onclick="toggleAddPanel()">➕ Add Item</button>
   </div>
 </header>
@@ -1024,8 +1084,7 @@
 <!-- ═══════════════════════════════════════════════════════ TOAST -->
 <div class="toast-container" id="toast-container"></div>
 
-<!-- ═══════════════════════════════════════════════════════ GOOGLE APIS -->
-<script src="https://apis.google.com/js/api.js"></script>
+<!-- Google Identity Services only — no gapi needed -->
 <script src="https://accounts.google.com/gsi/client"></script>
 
 <script>
@@ -1033,8 +1092,8 @@
    CONFIGURATION — Replace with your credentials
 ════════════════════════════════════════════════════════════ */
 const CONFIG = {
-  CLIENT_ID:  '421865949103-9n86mljvr8dv14eahvu3i7ncb60t12oe.apps.googleusercontent.com',       // e.g. 123456789-abc.apps.googleusercontent.com
-  API_KEY:    'AIzaSyAoVa8n52yOz-7G5PYecOAXKuIGIlBYPxg',          // from Google Cloud → Credentials → API Key
+  CLIENT_ID:  'YOUR_CLIENT_ID',       // e.g. 123456789-abc.apps.googleusercontent.com
+  API_KEY:    'YOUR_API_KEY',          // from Google Cloud → Credentials → API Key
   FOLDER_NAME: "Liz's Antique Archive",
   DATA_FILE:   'antiques.json',
   SCOPES:      'https://www.googleapis.com/auth/drive.file',
@@ -1053,6 +1112,7 @@ let driveConnected = false;
 let folderId     = null;
 let dataFileId   = null;
 let tokenClient  = null;
+let accessToken  = null;   // stored directly — no gapi.client needed
 
 /* ════════════════════════════════════════════════════════════
    GOOGLE IDENTITY / OAUTH
@@ -1064,7 +1124,7 @@ function initGoogleAuth() {
     callback: onTokenReceived,
   });
   document.getElementById('btn-connect').addEventListener('click', () => {
-    tokenClient.requestAccessToken({ prompt: 'consent' });
+    tokenClient.requestAccessToken({ prompt: '' });
   });
 }
 
@@ -1073,6 +1133,7 @@ async function onTokenReceived(tokenResponse) {
     toast('Connection failed: ' + tokenResponse.error, 'error');
     return;
   }
+  accessToken = tokenResponse.access_token;
   driveConnected = true;
   setAuthStatus(true);
   toast('✅ Connected to Google Drive!', 'success');
@@ -1090,8 +1151,8 @@ function setAuthStatus(connected) {
    GOOGLE DRIVE — FOLDER + DATA FILE
 ════════════════════════════════════════════════════════════ */
 async function driveRequest(url, options = {}) {
-  const token = gapi.client.getToken();
-  const headers = { 'Authorization': 'Bearer ' + token.access_token, ...options.headers };
+  if (!accessToken) throw new Error('Not authenticated — please connect to Drive first');
+  const headers = { 'Authorization': 'Bearer ' + accessToken, ...options.headers };
   const resp = await fetch(url, { ...options, headers });
   if (!resp.ok) throw new Error(`Drive error ${resp.status}: ${await resp.text()}`);
   return resp;
@@ -1687,11 +1748,13 @@ function toast(msg, type = 'info') {
    INIT
 ════════════════════════════════════════════════════════════ */
 window.onload = () => {
+  // GIS client initialises synchronously once the script loads
   if (typeof google !== 'undefined' && google.accounts) {
     initGoogleAuth();
   } else {
-    // Retry after APIs load
-    document.querySelector('script[src*="gsi/client"]').addEventListener('load', initGoogleAuth);
+    // Fallback: wait for GIS script to finish loading
+    const gisScript = document.querySelector('script[src*="gsi/client"]');
+    if (gisScript) gisScript.addEventListener('load', initGoogleAuth);
   }
   renderCollection();
 };
