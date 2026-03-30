@@ -453,54 +453,58 @@
     border: 1px solid var(--gold-light);
   }
 
-  /* ─── GRID VIEW ──────────────────────────────────────────────── */
+  /* ─── LIST VIEW ──────────────────────────────────────────────── */
   #collection-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
   }
 
-  /* ─── CARD ───────────────────────────────────────────────────── */
+  /* ─── LIST ROW ───────────────────────────────────────────────── */
   .antique-card {
     background: var(--white);
-    border-radius: var(--radius);
-    overflow: hidden;
-    box-shadow: 0 3px 16px var(--shadow);
+    border-radius: var(--radius-sm);
     border: 1px solid var(--parchment);
-    transition: transform 0.22s ease, box-shadow 0.22s ease;
+    box-shadow: 0 2px 8px var(--shadow);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
     cursor: pointer;
-    animation: cardIn 0.35s ease both;
+    animation: cardIn 0.3s ease both;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    overflow: hidden;
   }
 
   @keyframes cardIn {
-    from { opacity: 0; transform: scale(0.96) translateY(8px); }
-    to   { opacity: 1; transform: scale(1) translateY(0); }
+    from { opacity: 0; transform: translateX(-6px); }
+    to   { opacity: 1; transform: translateX(0); }
   }
 
   .antique-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 30px var(--shadow-deep);
+    transform: translateX(3px);
+    box-shadow: 0 4px 18px var(--shadow-deep);
+    border-color: var(--gold-light);
   }
 
-  .card-photo {
-    width: 100%;
-    aspect-ratio: 4/3;
-    object-fit: cover;
-    background: var(--parchment);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 3rem;
+  /* Coloured left accent bar, colour varies by type */
+  .card-accent {
+    width: 5px;
+    align-self: stretch;
+    flex-shrink: 0;
+    background: var(--gold-light);
   }
 
-  .card-photo img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  .card-emoji {
+    font-size: 1.6rem;
+    padding: 14px 14px 14px 16px;
+    flex-shrink: 0;
+    line-height: 1;
   }
 
   .card-body {
-    padding: 14px 15px 15px;
+    flex: 1;
+    padding: 12px 14px 12px 0;
+    min-width: 0;
   }
 
   .card-name {
@@ -508,57 +512,54 @@
     font-size: 1rem;
     font-weight: 600;
     color: var(--ink);
-    margin-bottom: 6px;
+    margin-bottom: 5px;
     line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .card-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 5px;
-    margin-bottom: 9px;
+    gap: 4px;
+    margin-bottom: 4px;
   }
 
   .tag {
-    font-size: 0.68rem;
+    font-size: 0.65rem;
     font-weight: 700;
-    padding: 3px 8px;
+    padding: 2px 7px;
     border-radius: 50px;
     letter-spacing: 0.4px;
     text-transform: uppercase;
   }
 
-  .tag-type     { background: var(--rose-light);     color: var(--rose-dark); }
-  .tag-century  { background: var(--lavender-light);  color: #6050a0; }
-  .tag-country  { background: var(--sky-light);       color: #3a6080; }
-  .tag-condition { background: var(--sage-light);      color: var(--sage-dark); }
+  .tag-type     { background: var(--rose-light);      color: var(--rose-dark); }
+  .tag-century  { background: var(--lavender-light);   color: #6050a0; }
+  .tag-country  { background: var(--sky-light);        color: #3a6080; }
+  .tag-condition { background: var(--sage-light);       color: var(--sage-dark); }
 
   .card-value {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 700;
     color: var(--gold-dark);
-    display: flex;
-    align-items: center;
-    gap: 4px;
   }
 
-  .card-description {
-    font-size: 0.8rem;
-    color: var(--ink-mid);
-    line-height: 1.5;
-    margin-top: 6px;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+  .card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 10px 12px 10px 0;
+    flex-shrink: 0;
   }
 
-  .card-footer {
-    padding: 10px 15px;
-    border-top: 1px solid var(--parchment);
-    display: flex;
-    justify-content: flex-end;
-    gap: 6px;
+  /* Photo indicator — small camera icon if photo exists */
+  .card-has-photo {
+    font-size: 0.7rem;
+    color: var(--ink-light);
+    padding: 2px 0;
+    text-align: center;
   }
 
   /* ─── EMPTY STATE ────────────────────────────────────────────── */
@@ -776,15 +777,9 @@
     .toolbar-left { width: 100%; }
     .toolbar-right { width: 100%; justify-content: flex-end; }
 
-    /* Grid */
-    #collection-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
-
     /* Header: subtitle hidden on small screens to save space */
     .header-titles p { display: none; }
     .header-titles h1 { font-size: 1.1rem; }
-
-    /* IMPORTANT: Connect button must always be visible — never hide it */
-    /* Only hide the subtitle tagline text on very narrow screens */
   }
 
   @media (max-width: 500px) {
@@ -1496,8 +1491,8 @@ async function saveItem() {
       const idx = collection.findIndex(i => i.id === editingId);
       const existing = collection[idx];
 
-      // If photo changed and old photo exists on drive, delete old
-      if (currentPhotoB64 && currentPhotoB64 !== existing.photoB64 && existing.photoDriveId && driveConnected) {
+      // If a new photo was chosen, upload it and delete the old one
+      if (currentPhotoB64 && existing.photoDriveId && driveConnected) {
         await deletePhotoFromDrive(existing.photoDriveId);
         existing.photoDriveId = null;
       }
@@ -1511,13 +1506,13 @@ async function saveItem() {
       existing.value       = document.getElementById('f-value').value.trim();
       existing.notes       = document.getElementById('f-notes').value.trim();
       existing.updatedAt   = now;
+      // Never store photoB64 in the collection — Drive only
+      delete existing.photoB64;
 
-      if (currentPhotoB64 && currentPhotoB64 !== existing.photoB64) {
-        existing.photoB64 = currentPhotoB64;
-        if (driveConnected) {
-          existing.photoDriveId = await uploadPhotoToDrive(currentPhotoB64, existing.id);
-        }
+      if (currentPhotoB64 && driveConnected) {
+        existing.photoDriveId = await uploadPhotoToDrive(currentPhotoB64, existing.id);
       }
+      // If currentPhotoB64 is null, existing.photoDriveId is preserved unchanged
 
       collection[idx] = existing;
       toast('✅ Item updated!', 'success');
@@ -1535,8 +1530,7 @@ async function saveItem() {
         condition:   document.getElementById('f-condition').value,
         value:       document.getElementById('f-value').value.trim(),
         notes:       document.getElementById('f-notes').value.trim(),
-        photoB64:    currentPhotoB64 || null,
-        photoDriveId: null,
+        photoDriveId: null,  // no photoB64 ever stored in JSON
         createdAt:   now,
         updatedAt:   now,
       };
@@ -1568,11 +1562,21 @@ async function saveItem() {
 /* ════════════════════════════════════════════════════════════
    RENDER COLLECTION
 ════════════════════════════════════════════════════════════ */
+function accentColour(type) {
+  const map = {
+    'Metal':'#c9a44a','Silverware':'#b8c8d8','Ceramics':'#e8a4a4',
+    'Glass':'#8fb8cc','Paintings':'#b0a4c8','Furniture':'#8fad8f',
+    'Textiles':'#e8c4a0','Jewellery':'#d4a0c8','Books & Paper':'#b8a888',
+    'Clocks & Watches':'#a8b8a8'
+  };
+  return map[type] || '#c9a44a';
+}
+
 function renderCollection() {
-  const q       = document.getElementById('search-input').value.toLowerCase();
-  const fType   = document.getElementById('filter-type').value;
-  const fCentury= document.getElementById('filter-century').value;
-  const fCountry= document.getElementById('filter-country').value;
+  const q        = document.getElementById('search-input').value.toLowerCase();
+  const fType    = document.getElementById('filter-type').value;
+  const fCentury = document.getElementById('filter-century').value;
+  const fCountry = document.getElementById('filter-country').value;
 
   const filtered = collection.filter(item => {
     if (fType    && item.type    !== fType)    return false;
@@ -1598,26 +1602,23 @@ function renderCollection() {
   }
   empty.classList.remove('show');
 
-  grid.innerHTML = filtered.map(item => `
-    <div class="antique-card" onclick="openModal('${item.id}')">
-      <div class="card-photo">
-        ${item.photoB64
-          ? `<img src="${item.photoB64}" alt="${escHtml(item.name)}" loading="lazy">`
-          : typeEmoji(item.type)}
-      </div>
+  grid.innerHTML = filtered.map((item, i) => `
+    <div class="antique-card" onclick="openModal('${item.id}')" style="animation-delay:${Math.min(i * 0.03, 0.3)}s">
+      <div class="card-accent" style="background:${accentColour(item.type)}"></div>
+      <div class="card-emoji">${typeEmoji(item.type)}</div>
       <div class="card-body">
         <div class="card-name">${escHtml(item.name)}</div>
         <div class="card-tags">
-          ${item.type     ? `<span class="tag tag-type">${item.type}</span>` : ''}
-          ${item.century  ? `<span class="tag tag-century">${item.century}</span>` : ''}
-          ${item.country  ? `<span class="tag tag-country">${item.country}</span>` : ''}
-          ${item.condition? `<span class="tag tag-condition">${item.condition}</span>` : ''}
+          ${item.type      ? `<span class="tag tag-type">${item.type}</span>` : ''}
+          ${item.century   ? `<span class="tag tag-century">${item.century}</span>` : ''}
+          ${item.country   ? `<span class="tag tag-country">${item.country}</span>` : ''}
+          ${item.condition ? `<span class="tag tag-condition">${item.condition}</span>` : ''}
         </div>
         ${item.value ? `<div class="card-value">💷 ${escHtml(item.value)}</div>` : ''}
-        ${item.description ? `<p class="card-description">${escHtml(item.description)}</p>` : ''}
       </div>
-      <div class="card-footer">
-        <button class="btn btn-sage btn-sm" onclick="event.stopPropagation(); editItemById('${item.id}')">✏️ Edit</button>
+      <div class="card-actions">
+        ${item.photoDriveId ? '<div class="card-has-photo" title="Has photo">📷</div>' : ''}
+        <button class="btn btn-sage btn-sm" onclick="event.stopPropagation(); editItemById('${item.id}')">✏️</button>
         <button class="btn btn-danger btn-sm" onclick="event.stopPropagation(); deleteItemById('${item.id}')">🗑️</button>
       </div>
     </div>
@@ -1641,27 +1642,19 @@ function escHtml(s) {
 /* ════════════════════════════════════════════════════════════
    ITEM DETAIL MODAL
 ════════════════════════════════════════════════════════════ */
-function openModal(id) {
+async function openModal(id) {
   viewingId = id;
   const item = collection.find(i => i.id === id);
   if (!item) return;
 
   document.getElementById('modal-name').textContent = item.name;
 
-  // Photo
-  const pw = document.getElementById('modal-photo-wrap');
-  if (item.photoB64) {
-    pw.innerHTML = `<img class="modal-photo" src="${item.photoB64}" alt="${escHtml(item.name)}">`;
-  } else {
-    pw.innerHTML = `<div class="modal-photo-placeholder">${typeEmoji(item.type)}</div>`;
-  }
-
   // Tags
   const tags = [
-    item.type     ? `<span class="tag tag-type">${item.type}</span>` : '',
-    item.century  ? `<span class="tag tag-century">${item.century}</span>` : '',
-    item.country  ? `<span class="tag tag-country">${item.country}</span>` : '',
-    item.condition? `<span class="tag tag-condition">${item.condition}</span>` : '',
+    item.type      ? `<span class="tag tag-type">${item.type}</span>` : '',
+    item.century   ? `<span class="tag tag-century">${item.century}</span>` : '',
+    item.country   ? `<span class="tag tag-country">${item.country}</span>` : '',
+    item.condition ? `<span class="tag tag-condition">${item.condition}</span>` : '',
   ].join('');
   document.getElementById('modal-tags').innerHTML = tags;
 
@@ -1670,12 +1663,13 @@ function openModal(id) {
 
   // Meta
   const meta = [
-    item.value     ? ['💷 Value', item.value] : null,
-    item.notes     ? ['🔍 Notes', item.notes] : null,
+    item.value  ? ['💷 Value',   item.value] : null,
+    item.notes  ? ['🔍 Notes',   item.notes] : null,
     ['📅 Added', new Date(item.createdAt).toLocaleDateString('en-GB', {day:'numeric',month:'long',year:'numeric'})],
-    item.updatedAt !== item.createdAt ? ['✏️ Updated', new Date(item.updatedAt).toLocaleDateString('en-GB', {day:'numeric',month:'long',year:'numeric'})] : null,
+    item.updatedAt !== item.createdAt
+      ? ['✏️ Updated', new Date(item.updatedAt).toLocaleDateString('en-GB', {day:'numeric',month:'long',year:'numeric'})]
+      : null,
   ].filter(Boolean);
-
   document.getElementById('modal-meta').innerHTML = meta.map(([label, val]) => `
     <div class="meta-item">
       <div class="meta-label">${label}</div>
@@ -1683,8 +1677,42 @@ function openModal(id) {
     </div>
   `).join('');
 
+  // Show modal immediately with photo loading state
+  const pw = document.getElementById('modal-photo-wrap');
+  if (item.photoDriveId) {
+    pw.innerHTML = `
+      <div style="width:100%;height:200px;background:var(--parchment);border-radius:var(--radius-sm);
+                  display:flex;align-items:center;justify-content:center;gap:10px;
+                  color:var(--ink-mid);font-size:0.85rem;margin-bottom:20px;" id="photo-loading">
+        <span class="spinner" style="border-color:rgba(58,48,40,0.15);border-top-color:var(--ink-mid);"></span>
+        Loading photo…
+      </div>`;
+  } else {
+    pw.innerHTML = `<div class="modal-photo-placeholder">${typeEmoji(item.type)}</div>`;
+  }
+
   document.getElementById('item-modal').style.display = 'flex';
   document.body.style.overflow = 'hidden';
+
+  // Fetch photo from Drive after modal is visible
+  if (item.photoDriveId && driveConnected) {
+    try {
+      const r = await driveRequest(
+        `https://www.googleapis.com/drive/v3/files/${item.photoDriveId}?alt=media`
+      );
+      const blob = await r.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      // Only update if this modal is still open for the same item
+      if (viewingId === id) {
+        pw.innerHTML = `<img class="modal-photo" src="${objectUrl}" alt="${escHtml(item.name)}"
+                            onload="URL.revokeObjectURL(this.src)" style="margin-bottom:20px;">`;
+      }
+    } catch(e) {
+      if (viewingId === id) {
+        pw.innerHTML = `<div class="modal-photo-placeholder" title="Could not load photo">${typeEmoji(item.type)}</div>`;
+      }
+    }
+  }
 }
 
 function closeModal() {
@@ -1726,9 +1754,17 @@ function editItemById(id) {
   document.getElementById('f-value').value       = item.value || '';
   document.getElementById('f-notes').value       = item.notes || '';
 
-  if (item.photoB64) {
-    currentPhotoB64 = item.photoB64;
-    showPhotoPreview(item.photoB64);
+  if (item.photoDriveId) {
+    // Item has a photo on Drive — show a "photo exists" indicator
+    // User can replace it by selecting a new one; if they don't, existing Drive photo is kept
+    currentPhotoB64 = null;  // no local copy — will keep existing Drive photo unless replaced
+    const drop = document.getElementById('photo-drop');
+    const placeholder = document.getElementById('photo-placeholder');
+    document.getElementById('photo-preview').style.display = 'none';
+    placeholder.innerHTML = `<span>📷</span><strong>Photo on Drive</strong><p style="margin-top:6px;font-size:0.75rem;opacity:0.7">Select a new photo to replace it</p>`;
+    placeholder.style.display = '';
+    drop.classList.remove('has-image');
+    document.getElementById('btn-clear-photo').style.display = 'none';
   } else {
     clearPhoto();
   }
