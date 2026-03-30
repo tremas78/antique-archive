@@ -1102,8 +1102,8 @@
    CONFIGURATION — Replace with your credentials
 ════════════════════════════════════════════════════════════ */
 const CONFIG = {
-  CLIENT_ID:  '421865949103-9n86mljvr8dv14eahvu3i7ncb60t12oe.apps.googleusercontent.com',       // e.g. 123456789-abc.apps.googleusercontent.com
-  API_KEY:    'AIzaSyAoVa8n52yOz-7G5PYecOAXKuIGIlBYPxg',          // from Google Cloud → Credentials → API Key
+  CLIENT_ID:  'YOUR_CLIENT_ID',       // e.g. 123456789-abc.apps.googleusercontent.com
+  API_KEY:    'YOUR_API_KEY',          // from Google Cloud → Credentials → API Key
   FOLDER_NAME: "Liz Antique Archive",  // no apostrophe — avoids Drive query escaping issues
   DATA_FILE:   'antiques.json',
   SCOPES:      'https://www.googleapis.com/auth/drive',  // full drive scope needed for folder search
@@ -1727,8 +1727,9 @@ function closeModalOnOverlay(e) {
 
 function editItem() {
   if (!viewingId) return;
+  const id = viewingId;
   closeModal();
-  editItemById(viewingId);
+  setTimeout(() => editItemById(id), 50);
 }
 
 function deleteItem() {
