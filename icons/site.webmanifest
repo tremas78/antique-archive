@@ -1,0 +1,22 @@
+{
+  "name": "Liz's Antique Archive",
+  "short_name": "Antiques",
+  "icons": [
+    {
+      "src": "icons/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "theme_color": "#c9a44a",
+  "background_color": "#3a3028",
+  "display": "standalone",
+  "start_url": "."
+}
