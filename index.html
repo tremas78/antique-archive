@@ -34,25 +34,25 @@
   :root {
     --cream:       #fdf6ec;
     --parchment:   #f5e9d3;
-    --rose:        #e8a4a4;
-    --rose-light:  #f5d0d0;
-    --rose-dark:   #c97878;
-    --sage:        #8fad8f;
-    --sage-light:  #c8ddc8;
-    --sage-dark:   #5e7d5e;
+    --rose:        #d4a843;
+    --rose-light:  #f0d98a;
+    --rose-dark:   #a07820;
+    --sage:        #2e7d8c;
+    --sage-light:  #b8dce0;
+    --sage-dark:   #1a5c6a;
     --gold:        #c9a44a;
     --gold-light:  #e8d5a0;
     --gold-dark:   #9a7a2e;
-    --lavender:    #b0a4c8;
-    --lavender-light: #d8d0e8;
-    --sky:         #8fb8cc;
-    --sky-light:   #cde4ef;
-    --ink:         #3a3028;
-    --ink-mid:     #6b5e52;
-    --ink-light:   #9b8e82;
+    --lavender:    #7a9ab8;
+    --lavender-light: #c8d8e8;
+    --sky:         #4a8ab4;
+    --sky-light:   #c0d8f0;
+    --ink:         #0d1b2e;
+    --ink-mid:     #2a4060;
+    --ink-light:   #6a7f98;
     --white:       #ffffff;
-    --shadow:      rgba(58,48,40,0.12);
-    --shadow-deep: rgba(58,48,40,0.22);
+    --shadow:      rgba(13,27,46,0.14);
+    --shadow-deep: rgba(13,27,46,0.28);
     --radius:      14px;
     --radius-sm:   8px;
   }
@@ -66,14 +66,14 @@
     color: var(--ink);
     min-height: 100vh;
     background-image:
-      radial-gradient(ellipse at 10% 20%, rgba(201,164,74,0.08) 0%, transparent 50%),
-      radial-gradient(ellipse at 90% 80%, rgba(176,164,200,0.10) 0%, transparent 50%),
-      radial-gradient(ellipse at 50% 50%, rgba(143,173,143,0.06) 0%, transparent 70%);
+      radial-gradient(ellipse at 10% 20%, rgba(201,164,74,0.10) 0%, transparent 50%),
+      radial-gradient(ellipse at 90% 80%, rgba(13,27,46,0.07) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(13,27,46,0.05) 0%, transparent 70%);
   }
 
   /* ─── HEADER ────────────────────────────────────────────────── */
   header {
-    background: linear-gradient(135deg, var(--ink) 0%, #5a4a3a 100%);
+    background: linear-gradient(135deg, #0a1628 0%, #1a2d4a 100%);
     padding: 14px 20px;
     display: flex;
     align-items: center;
@@ -117,7 +117,7 @@
 
   .header-titles p {
     font-size: 0.72rem;
-    color: #b0a090;
+    color: #9aafc4;
     font-style: italic;
     letter-spacing: 1px;
     margin-top: 2px;
@@ -172,13 +172,13 @@
   }
 
   .btn-lavender {
-    background: linear-gradient(135deg, var(--lavender) 0%, #8070a0 100%);
+    background: linear-gradient(135deg, var(--lavender) 0%, #3a6a9a 100%);
     color: var(--white);
     box-shadow: 0 2px 8px rgba(176,164,200,0.35);
   }
 
   .btn-sky {
-    background: linear-gradient(135deg, var(--sky) 0%, #5a8aaa 100%);
+    background: linear-gradient(135deg, var(--sky) 0%, #1a5a8a 100%);
     color: var(--white);
     box-shadow: 0 2px 8px rgba(143,184,204,0.35);
   }
@@ -209,7 +209,7 @@
     align-items: center;
     gap: 5px;
   }
-  #auth-status.connected { background: rgba(143,173,143,0.3); color: #8fdd8f; border: 1px solid rgba(143,173,143,0.4); }
+  #auth-status.connected { background: rgba(46,125,140,0.3); color: #7ad4e0; border: 1px solid rgba(46,125,140,0.5); }
   #auth-status.disconnected { background: rgba(232,164,164,0.2); color: var(--rose-light); border: 1px solid rgba(232,164,164,0.3); }
 
   /* ─── MAIN LAYOUT ────────────────────────────────────────────── */
@@ -554,8 +554,8 @@
   }
 
   .tag-type     { background: var(--rose-light);      color: var(--rose-dark); }
-  .tag-century  { background: var(--lavender-light);   color: #6050a0; }
-  .tag-country  { background: var(--sky-light);        color: #3a6080; }
+  .tag-century  { background: var(--lavender-light);   color: #3a6a9a; }
+  .tag-country  { background: var(--sky-light);        color: #1a5a8a; }
   .tag-condition { background: var(--sage-light);       color: var(--sage-dark); }
 
   .card-value {
@@ -611,7 +611,7 @@
   .card-thumb-loading {
     width: 14px;
     height: 14px;
-    border: 2px solid rgba(58,48,40,0.12);
+    border: 2px solid rgba(13,27,46,0.12);
     border-top-color: var(--gold);
     border-radius: 50%;
     animation: spin 0.7s linear infinite;
@@ -641,7 +641,7 @@
   .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(30,20,10,0.65);
+    background: rgba(13,27,46,0.70);
     z-index: 200;
     display: flex;
     align-items: center;
@@ -660,7 +660,7 @@
     max-width: 680px;
     max-height: 90vh;
     overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(30,20,10,0.4);
+    box-shadow: 0 20px 60px rgba(13,27,46,0.45);
     animation: modalIn 0.25s ease;
   }
 
@@ -1136,10 +1136,10 @@
 </div>
 
 <!-- Welcome splash — always shown on load, requires user tap to sign in -->
-<div id="auth-overlay" style="display:flex; position:fixed; inset:0; z-index:300; background:linear-gradient(135deg, var(--ink) 0%, #5a4a3a 100%); align-items:center; justify-content:center; flex-direction:column; padding:30px;">
+<div id="auth-overlay" style="display:flex; position:fixed; inset:0; z-index:300; background:linear-gradient(135deg, #0d1b2e 0%, #1a2d4a 100%); align-items:center; justify-content:center; flex-direction:column; padding:30px;">
   <canvas id="roman-canvas" style="position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:0;"></canvas>
-  <div style="background:var(--white); border-radius:var(--radius); padding:44px 36px; max-width:360px; width:100%; box-shadow:0 20px 60px rgba(30,20,10,0.5); text-align:center; position:relative; z-index:1;">
-    <div style="margin-bottom:12px;"><img src="icons/apple-touch-icon.png" alt="Antique Archive" style="width:96px;height:96px;border-radius:22px;box-shadow:0 4px 20px rgba(58,48,40,0.18);display:block;margin:0 auto;"></div>
+  <div style="background:var(--white); border-radius:var(--radius); padding:44px 36px; max-width:360px; width:100%; box-shadow:0 20px 60px rgba(13,27,46,0.5); text-align:center; position:relative; z-index:1;">
+    <div style="margin-bottom:12px;"><img src="icons/apple-touch-icon.png" alt="Antique Archive" style="width:96px;height:96px;border-radius:22px;box-shadow:0 4px 20px rgba(13,27,46,0.22);display:block;margin:0 auto;"></div>
     <h1 style="font-family:'Playfair Display',serif; font-size:1.6rem; color:var(--ink); margin-bottom:6px; font-weight:700;">Liz's Antique Archive</h1>
     <p style="font-family:'Playfair Display',serif; font-style:italic; color:var(--ink-light); font-size:0.85rem; margin-bottom:28px;">✦ A personal collection catalogue ✦</p>
     <div style="height:1px; background:linear-gradient(to right, transparent, var(--gold-light), transparent); margin-bottom:28px;"></div>
@@ -1628,8 +1628,8 @@ function accentColour(type) {
   const map = {
     'Metal':'#c9a44a','Silverware':'#b8c8d8','Ceramics':'#e8a4a4',
     'Glass':'#8fb8cc','Paintings':'#b0a4c8','Furniture':'#8fad8f',
-    'Textiles':'#e8c4a0','Jewellery':'#d4a0c8','Books & Paper':'#b8a888',
-    'Clocks & Watches':'#a8b8a8'
+    'Textiles':'#d4a843','Jewellery':'#d4a0c8','Books & Paper':'#8a9ab0',
+    'Clocks & Watches':'#4a8ab4'
   };
   return map[type] || '#c9a44a';
 }
@@ -1780,7 +1780,7 @@ async function openModal(id) {
       <div style="width:100%;height:200px;background:var(--parchment);border-radius:var(--radius-sm);
                   display:flex;align-items:center;justify-content:center;gap:10px;
                   color:var(--ink-mid);font-size:0.85rem;margin-bottom:20px;" id="photo-loading">
-        <span class="spinner" style="border-color:rgba(58,48,40,0.15);border-top-color:var(--ink-mid);"></span>
+        <span class="spinner" style="border-color:rgba(13,27,46,0.15);border-top-color:var(--ink-mid);"></span>
         Loading photo…
       </div>`;
   } else {
