@@ -47,6 +47,12 @@
     --lavender-light: #c8d8e8;
     --sky:         #4a8ab4;
     --sky-light:   #c0d8f0;
+    --pink:        #c4607a;
+    --pink-light:  #f2d0d8;
+    --pink-dark:   #8a3050;
+    --purple:      #8a6ab8;
+    --purple-light: #ddd0f0;
+    --purple-dark:  #5a3a8a;
     --ink:         #0d1b2e;
     --ink-mid:     #2a4060;
     --ink-light:   #6a7f98;
@@ -553,10 +559,10 @@
     text-transform: uppercase;
   }
 
-  .tag-type     { background: var(--rose-light);      color: var(--rose-dark); }
-  .tag-century  { background: var(--lavender-light);   color: #3a6a9a; }
-  .tag-country  { background: var(--sky-light);        color: #1a5a8a; }
-  .tag-condition { background: var(--sage-light);       color: var(--sage-dark); }
+  .tag-type      { background: var(--pink-light);   color: var(--pink-dark); }
+  .tag-century   { background: var(--purple-light); color: var(--purple-dark); }
+  .tag-country   { background: var(--sky-light);    color: #1a5a8a; }
+  .tag-condition { background: #fde0c8;             color: #8a3a10; }
 
   .card-value {
     font-size: 0.75rem;
@@ -882,6 +888,41 @@
   }
 
   .editing-badge.show { display: inline-flex; align-items: center; gap: 5px; }
+  /* ─── SCROLL TO TOP ─────────────────────────────────────────── */
+  #scroll-top {
+    position: fixed;
+    bottom: 28px;
+    right: 24px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+    color: var(--white);
+    border: none;
+    font-size: 1.3rem;
+    cursor: pointer;
+    box-shadow: 0 4px 16px var(--shadow-deep);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.2s ease;
+    z-index: 99;
+  }
+
+  #scroll-top.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  #scroll-top:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px var(--shadow-deep);
+  }
+
+  #scroll-top:active { transform: translateY(0); }
+
 </style>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -1151,6 +1192,9 @@
     <p style="margin-top:16px; font-size:0.72rem; color:var(--ink-light); line-height:1.5;">Your collection is stored securely<br>in your own Google Drive.</p>
   </div>
 </div>
+
+<!-- ═══════════════════════════════════════════════════════ SCROLL TO TOP -->
+<button id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
 
 <!-- ═══════════════════════════════════════════════════════ TOAST -->
 <div class="toast-container" id="toast-container"></div>
@@ -2008,6 +2052,12 @@ window.onload = () => {
     if (gisScript) gisScript.addEventListener('load', initGoogleAuth);
   }
   renderCollection();
+
+  // Scroll-to-top button visibility
+  const scrollBtn = document.getElementById('scroll-top');
+  window.addEventListener('scroll', () => {
+    scrollBtn.classList.toggle('visible', window.scrollY > 400);
+  });
 };
 </script>
 
