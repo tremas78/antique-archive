@@ -902,6 +902,7 @@
   <div class="header-actions">
     <div id="auth-status" class="disconnected">⬤ Not connected</div>
     <button class="btn btn-rose" id="btn-connect">🔑 Connect to Drive</button>
+    <button class="btn btn-ghost btn-sm" id="btn-signout" onclick="signOut()" style="display:none; border-color:rgba(224,112,112,0.5); color:#f0a0a0;">🚪 Sign Out</button>
     <button class="btn btn-gold" id="btn-add-item" onclick="toggleAddPanel()">➕ Add Item</button>
   </div>
 </header>
@@ -1254,6 +1255,25 @@ function setAuthStatus(connected) {
   el.className = connected ? 'connected' : 'disconnected';
   el.textContent = connected ? '\u25CF Drive connected' : '\u25CF Not connected';
   document.getElementById('btn-connect').style.display = connected ? 'none' : '';
+  document.getElementById('btn-signout').style.display = connected ? '' : 'none';
+}
+
+function signOut() {
+  if (!confirm('Sign out of Google Drive?\n\nUnsaved changes will be lost.')) return;
+  // Revoke the token if we have one
+  if (accessToken && typeof google !== 'undefined' && google.accounts) {
+    google.accounts.oauth2.revoke(accessToken, () => {});
+  }
+  // Clear all auth state
+  accessToken = null;
+  driveConnected = false;
+  folderId = null;
+  dataFileId = null;
+  collection = [];
+  setAuthStatus(false);
+  renderCollection();
+  showSplash();
+  toast('Signed out successfully', 'info');
 }
 
 /* ════════════════════════════════════════════════════════════
